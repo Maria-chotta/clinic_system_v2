@@ -1,0 +1,24 @@
+# Python virtual environment
+backend/venv/
+# VS Code settings
+.vscode/
+
+# Python caches & environment
+__pycache__/
+*.pyc
+.env
+
+# Node / frontend (Vite)
+node_modules/
+dist/
+# Log & output files
+*.log
+err.txt
+out.txt
+server_output.txt
+
+# Batch / temp files
+run.bat
+
+# Others
+path

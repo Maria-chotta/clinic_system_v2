@@ -1,0 +1,54 @@
+from rest_framework import serializers
+from datetime import date, datetime
+from django.utils import timezone
+from .models import Appointment
+from accounts.serializers import UserSerializer
+
+class AppointmentSerializer(serializers.ModelSerializer):
+    patient_details = UserSerializer(source='patient', read_only=True)
+    doctor_details = UserSerializer(source='doctor', read_only=True)
+    doctor_name = serializers.SerializerMethodField()
+    report_url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Appointment
+        fields = '__all__'
+        read_only_fields = ('created_at', 'updated_at', 'patient', 'payment_status', 'payment_reference')
+    
+    def get_doctor_name(self, obj):
+        return f"Dr. {obj.doctor.first_name} {obj.doctor.last_name}"
+    
+    def get_report_url(self, obj):
+        if obj.report:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.report.url)
+        return None
+    
+    def validate(self, data):
+        appointment_date = data.get('appointment_date')
+        
+        # Skip validation if appointment_date is not provided
+        if not appointment_date:
+            return data
+            
+        # Convert to date if it's a string
+        if isinstance(appointment_date, str):
+            try:
+                appointment_date = datetime.strptime(appointment_date, '%Y-%m-%d').date()
+            except ValueError:
+                raise serializers.ValidationError({"appointment_date": "Invalid date format. Use YYYY-MM-DD"})
+        
+        # Check if date is in the past
+        if appointment_date < date.today():
+            raise serializers.ValidationError({"appointment_date": "Appointment date cannot be in the past"})
+        
+        return data
+    
+    def create(self, validated_data):
+        # Get the request context
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            # Set the patient to the current user
+            validated_data['patient'] = request.user
+        return super().create(validated_data)
