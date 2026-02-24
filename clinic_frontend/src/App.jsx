@@ -19,6 +19,7 @@ import DoctorDashboard from './components/doctor/DoctorDashboard';
 import ManageAppointments from './components/doctor/ManageAppointments';
 import AdminDashboard from './components/admin/AdminDashboard';
 import ManageUsers from './components/admin/ManageUsers';
+import Settings from './components/admin/Settings';
 import Profile from './components/common/Profile';
 
 function App() {
@@ -48,10 +49,11 @@ function App() {
                   <Route path="appointments" element={<ManageAppointments />} />
                 </Route>
                 
-                {/* Admin Routes */}
+{/* Admin Routes */}
                 <Route path="admin">
                   <Route index element={<AdminDashboard />} />
                   <Route path="users" element={<ManageUsers />} />
+                  <Route path="settings" element={<Settings />} />
                 </Route>
                 
                 {/* Common Routes */}

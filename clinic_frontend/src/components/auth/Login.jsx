@@ -18,7 +18,7 @@ import {
   LocalHospital, 
   Visibility, 
   VisibilityOff,
-  LockOutlined 
+  LockOutlined
 } from '@mui/icons-material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -42,14 +42,12 @@ const Login = () => {
       ...formData,
       [name]: value,
     });
-    // Clear error for this field
     if (errors[name]) {
       setErrors({
         ...errors,
         [name]: '',
       });
     }
-    // Clear general error message
     if (errorMessage) {
       setErrorMessage('');
     }
@@ -78,7 +76,6 @@ const Login = () => {
     try {
       await login(formData);
       
-      // Redirect based on user role
       const user = JSON.parse(localStorage.getItem('user'));
       if (user) {
         switch (user.role) {

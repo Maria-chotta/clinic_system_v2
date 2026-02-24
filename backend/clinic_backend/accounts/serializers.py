@@ -4,12 +4,13 @@ from .models import User, DoctorProfile
 
 class UserSerializer(serializers.ModelSerializer):
     specialization = serializers.SerializerMethodField()
+    consultation_fee = serializers.SerializerMethodField()
     
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 
                   'role', 'phone_number', 'profile_picture', 'address', 'date_of_birth',
-                  'specialization')
+                  'specialization', 'consultation_fee', 'is_active')
         read_only_fields = ('id', 'username', 'role')
     
     def get_specialization(self, obj):
@@ -18,6 +19,14 @@ class UserSerializer(serializers.ModelSerializer):
                 return obj.doctor_profile.specialization
             except DoctorProfile.DoesNotExist:
                 return None
+        return None
+    
+    def get_consultation_fee(self, obj):
+        if obj.role == 'doctor':
+            try:
+                return str(obj.doctor_profile.consultation_fee)
+            except DoctorProfile.DoesNotExist:
+                return '0'
         return None
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):

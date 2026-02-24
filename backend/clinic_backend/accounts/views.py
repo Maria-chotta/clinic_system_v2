@@ -95,3 +95,56 @@ class UserListView(generics.ListAPIView):
         if self.request.user.role != 'admin':
             return User.objects.none()
         return User.objects.all().select_related('doctor_profile')
+
+class AdminUpdateDoctorView(APIView):
+    """
+    API endpoint for admin to update doctor profile including consultation_fee
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def put(self, request, user_id):
+        # Only admins can update doctor profiles
+        if request.user.role != 'admin':
+            return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+        
+        try:
+            user = User.objects.get(id=user_id, role='doctor')
+        except User.DoesNotExist:
+            return Response({'error': 'Doctor not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            doctor_profile = user.doctor_profile
+        except DoctorProfile.DoesNotExist:
+            doctor_profile = DoctorProfile.objects.create(user=user)
+        
+        # Update doctor profile fields
+        consultation_fee = request.data.get('consultation_fee')
+        specialization = request.data.get('specialization')
+        license_number = request.data.get('license_number')
+        years_of_experience = request.data.get('years_of_experience')
+        available_days = request.data.get('available_days')
+        bio = request.data.get('bio')
+        
+        if consultation_fee:
+            try:
+                doctor_profile.consultation_fee = float(consultation_fee)
+            except (ValueError, TypeError):
+                pass
+        
+        if specialization:
+            doctor_profile.specialization = specialization
+        if license_number:
+            doctor_profile.license_number = license_number
+        if years_of_experience:
+            try:
+                doctor_profile.years_of_experience = int(years_of_experience)
+            except (ValueError, TypeError):
+                pass
+        if available_days:
+            doctor_profile.available_days = available_days
+        if bio:
+            doctor_profile.bio = bio
+        
+        doctor_profile.save()
+        
+        return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
