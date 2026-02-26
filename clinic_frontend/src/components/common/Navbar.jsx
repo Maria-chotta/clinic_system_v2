@@ -126,7 +126,7 @@ const Navbar = ({ onMenuClick }) => {
                 fontSize: '1.1rem',
               }}
             >
-              City Medical Center
+              GLOBAL Medical Center
             </Typography>
             <Typography 
               variant="caption" 

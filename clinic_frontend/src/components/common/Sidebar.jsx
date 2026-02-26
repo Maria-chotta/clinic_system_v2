@@ -94,7 +94,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle, drawerWidth = 260 }) => {
               lineHeight: 1.2,
             }}
           >
-            City Medical
+            GLOBAL Medical Center
           </Typography>
           <Typography 
             variant="caption" 
@@ -171,7 +171,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle, drawerWidth = 260 }) => {
       {/* Footer */}
       <Box sx={{ p: 2, textAlign: 'center' }}>
         <Typography variant="caption" color="textSecondary" sx={{ fontSize: '0.7rem' }}>
-          © 2024 City Medical Center
+          © 2024 GLOBAL Medical Center
         </Typography>
       </Box>
     </Box>

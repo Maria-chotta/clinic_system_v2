@@ -142,7 +142,7 @@ const Login = () => {
               <LocalHospital sx={{ fontSize: 40, color: 'white' }} />
             </Box>
             <Typography variant="h5" component="h1" fontWeight="600" color="primary">
-              City Medical Center
+              GLOBAL Medical Center
             </Typography>
             <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
               Clinic Appointment System

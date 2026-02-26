@@ -1,5 +1,6 @@
 # Python virtual environment
 backend/venv/
+
 # VS Code settings
 .vscode/
 
@@ -8,9 +9,13 @@ __pycache__/
 *.pyc
 .env
 
+# Django database
+db.sqlite3
+
 # Node / frontend (Vite)
 node_modules/
 dist/
+
 # Log & output files
 *.log
 err.txt

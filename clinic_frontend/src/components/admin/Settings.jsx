@@ -34,7 +34,7 @@ const Settings = () => {
     language: language,
     emailNotifications: true,
     smsNotifications: false,
-    clinicName: 'City Medical Center',
+    clinicName: 'Global Medical Center',
     clinicAddress: '',
     clinicPhone: '',
   });
@@ -57,7 +57,7 @@ const Settings = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate saving settings
+    
     setTimeout(() => {
       setLoading(false);
       toast.success(t('profileUpdated'));

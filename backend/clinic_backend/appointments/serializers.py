@@ -27,6 +27,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
     
     def validate(self, data):
         appointment_date = data.get('appointment_date')
+        appointment_time = data.get('appointment_time')
+        doctor = data.get('doctor')
         
         # Skip validation if appointment_date is not provided
         if not appointment_date:
@@ -42,6 +44,32 @@ class AppointmentSerializer(serializers.ModelSerializer):
         # Check if date is in the past
         if appointment_date < date.today():
             raise serializers.ValidationError({"appointment_date": "Appointment date cannot be in the past"})
+        
+        # Check for conflicting appointments with the same doctor at the same date and time
+        if doctor and appointment_time:
+            # Get the doctor instance if only ID was passed
+            if isinstance(doctor, int):
+                from accounts.models import User
+                try:
+                    doctor = User.objects.get(id=doctor, role='doctor')
+                except User.DoesNotExist:
+                    pass  # Will be caught by other validation
+            
+            # Check for existing appointments (excluding cancelled ones)
+            conflicting_appointments = Appointment.objects.filter(
+                doctor=doctor,
+                appointment_date=appointment_date,
+                appointment_time=appointment_time
+            ).exclude(status='cancelled')
+            
+            # If updating an existing appointment, exclude it from the check
+            if self.instance:
+                conflicting_appointments = conflicting_appointments.exclude(pk=self.instance.pk)
+            
+            if conflicting_appointments.exists():
+                raise serializers.ValidationError({
+                    "non_field_errors": f"Dr. {doctor.first_name} {doctor.last_name} already has an appointment at this date and time."
+                })
         
         return data
     
