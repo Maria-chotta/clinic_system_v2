@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 from datetime import timedelta
-import dj_database_url
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,10 +68,10 @@ WSGI_APPLICATION = 'clinic_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'clinic_db',
-        'USER': 'postgres',
-        'PASSWORD': 'M@riam_123',
-        'HOST': 'localhost',
+        'NAME': 'clinic_db_0gnn',
+        'USER': 'clinic_db_0gnn_user',
+        'PASSWORD': 'P35cEZ05IXgJBTwK3qmyHB293RfWEbwC',
+        'HOST': 'dpg-d6hhijkr85hc739fmol0-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
 }

@@ -28,6 +28,15 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle, drawerWidth = 260 }) => {
   const location = useLocation();
   const { user } = useAuth();
 
+  const isPathActive = (path) => {
+    // For exact match paths (like /profile)
+    if (path === '/profile') {
+      return location.pathname === path;
+    }
+    // For nested routes (like /patient, /doctor, /admin)
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
   const getMenuItems = () => {
     if (!user) return [];
 
@@ -120,50 +129,53 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle, drawerWidth = 260 }) => {
       )}
 
       <List sx={{ px: 1, flexGrow: 1 }}>
-        {getMenuItems().map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
-            <ListItemButton
-              selected={location.pathname === item.path}
-              onClick={() => {
-                navigate(item.path);
-                if (mobileOpen) handleDrawerToggle();
-              }}
-              sx={{
-                borderRadius: 2,
-                py: 1.2,
-                '&.Mui-selected': {
-                  backgroundColor: 'primary.main',
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: 'primary.dark',
-                  },
-                  '& .MuiListItemIcon-root': {
+        {getMenuItems().map((item) => {
+          const isActive = isPathActive(item.path);
+          return (
+            <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
+              <ListItemButton
+                selected={isActive}
+                onClick={() => {
+                  navigate(item.path);
+                  if (mobileOpen) handleDrawerToggle();
+                }}
+                sx={{
+                  borderRadius: 2,
+                  py: 1.2,
+                  '&.Mui-selected': {
+                    backgroundColor: 'primary.main',
                     color: 'white',
+                    '&:hover': {
+                      backgroundColor: 'primary.dark',
+                    },
+                    '& .MuiListItemIcon-root': {
+                      color: 'white',
+                    },
                   },
-                },
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 137, 123, 0.08)',
-                },
-              }}
-            >
-              <ListItemIcon 
-                sx={{ 
-                  minWidth: 40,
-                  color: location.pathname === item.path ? 'white' : 'primary.main',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 137, 123, 0.08)',
+                  },
                 }}
               >
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText 
-                primary={item.text} 
-                primaryTypographyProps={{
-                  fontWeight: location.pathname === item.path ? 600 : 400,
-                  fontSize: '0.9rem',
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
+                <ListItemIcon 
+                  sx={{ 
+                    minWidth: 40,
+                    color: isActive ? 'white' : 'primary.main',
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText 
+                  primary={item.text} 
+                  primaryTypographyProps={{
+                    fontWeight: isActive ? 600 : 400,
+                    fontSize: '0.9rem',
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
       </List>
 
       <Divider />

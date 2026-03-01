@@ -16,7 +16,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at', 'patient', 'payment_status', 'payment_reference')
     
     def get_doctor_name(self, obj):
-        return f"Dr. {obj.doctor.first_name} {obj.doctor.last_name}"
+        if obj.doctor:
+            return f"Dr. {obj.doctor.first_name} {obj.doctor.last_name}"
+        return "Unknown Doctor"
     
     def get_report_url(self, obj):
         if obj.report:
